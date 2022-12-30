@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React, { Component } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BsArrowRight } from "react-icons/bs";
@@ -38,13 +39,19 @@ export class AboutUs extends Component<AboutUsProps, AboutUsState> {
                   brains and we are here to assist you achieve this.
                 </div>
                 <div className="flex flex-col md:flex-row md:items-center gap-3 mt-5">
-                  <div className="flex flex-row items-center justify-center gap-2 w-max text-base font-semibold bg-gray-100 hover:bg-green-700 hover:text-white px-5 py-3 rounded-md hover:shadow-2xl cursor-pointer animate__animated animate__zoomIn">
+                  <Link
+                    href={"/about"}
+                    className="flex flex-row items-center justify-center gap-2 w-max text-base font-semibold bg-gray-100 hover:bg-green-700 hover:text-white px-5 py-3 rounded-md hover:shadow-2xl cursor-pointer animate__animated animate__zoomIn"
+                  >
                     <span>Read more</span>
                     <div>
                       <MdReadMore className="text-2xl" />
                     </div>
-                  </div>
-                  <div className="relative flex flex-row items-center justify-center gap-2 w-max text-base bg-primary-800 hover:bg-green-700 text-white px-5 py-3 rounded-md hover:shadow-2xl cursor-pointer animate__animated animate__zoomIn">
+                  </Link>
+                  <Link
+                    href={"/store"}
+                    className="relative flex flex-row items-center justify-center gap-2 w-max text-base bg-primary-800 hover:bg-green-700 text-white px-5 py-3 rounded-md hover:shadow-2xl cursor-pointer animate__animated animate__zoomIn"
+                  >
                     <div>
                       <AiOutlineShoppingCart className="text-2xl" />
                     </div>
@@ -53,7 +60,7 @@ export class AboutUs extends Component<AboutUsProps, AboutUsState> {
                       <BsArrowRight className="text-2xl" />
                     </div>
                     <div className="absolute right-1 h-3 w-3 rounded-full bg-white animate-ping"></div>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>

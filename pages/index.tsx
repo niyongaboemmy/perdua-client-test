@@ -15,6 +15,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BookCategories } from "../components/HomepageComponents/BookCategories";
 import { NewBooks } from "../components/HomepageComponents/NewBooks";
 import AboutUs from "../components/HomepageComponents/AboutUs";
+import Link from "next/link";
 
 class AppPage extends Component<AppPageProps, AppPageState> {
   render() {
@@ -40,7 +41,10 @@ class AppPage extends Component<AppPageProps, AppPageState> {
               </div>
               <div className="my-32 md:my-52 lg:my-0"></div>
               <div className="flex flex-col md:flex-row md:items-center gap-4 mt-16">
-                <div className="relative flex flex-row items-center justify-center gap-2 w-max text-lg bg-primary-800 hover:bg-green-700 text-white px-5 py-3 rounded-md hover:shadow-2xl cursor-pointer animate__animated animate__zoomIn">
+                <Link
+                  href={"/store"}
+                  className="relative flex flex-row items-center justify-center gap-2 w-max text-lg bg-primary-800 hover:bg-green-700 text-white px-5 py-3 rounded-md hover:shadow-2xl cursor-pointer animate__animated animate__zoomIn"
+                >
                   <div>
                     <AiOutlineShoppingCart className="text-2xl" />
                   </div>
@@ -49,13 +53,16 @@ class AppPage extends Component<AppPageProps, AppPageState> {
                     <BsArrowRight className="text-2xl" />
                   </div>
                   <div className="absolute right-1 h-3 w-3 rounded-full bg-white animate-ping"></div>
-                </div>
-                <div className="flex flex-row items-center justify-center gap-2 w-max text-lg text-green-700 bg-white hover:bg-green-700 hover:text-white px-5 py-3 rounded-md hover:shadow-2xl cursor-pointer animate__animated animate__zoomIn">
+                </Link>
+                <Link
+                  href={"/contact"}
+                  className="flex flex-row items-center justify-center gap-2 w-max text-lg text-green-700 bg-white hover:bg-green-700 hover:text-white px-5 py-3 rounded-md hover:shadow-2xl cursor-pointer animate__animated animate__zoomIn"
+                >
                   <div>
                     <IoMdCall className="text-2xl" />
                   </div>
                   <span>Contact Us</span>
-                </div>
+                </Link>
               </div>
               <div className="mb-20"></div>
             </Container>
