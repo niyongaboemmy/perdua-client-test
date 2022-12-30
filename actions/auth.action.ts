@@ -34,13 +34,6 @@ export interface LocationAPI {
   sectors: SectorLocationItem[];
 }
 
-if (typeof window !== "undefined") {
-  console.log("LOCAL STORE: ", window.localStorage);
-  // 👉️ can use localStorage here
-} else {
-  console.log("You are on the server");
-  // 👉️ can't use localStorage
-}
 var token: any = null;
 if (typeof window !== "undefined") {
   token = localStorage.getItem(APP_TOKEN_NAME);

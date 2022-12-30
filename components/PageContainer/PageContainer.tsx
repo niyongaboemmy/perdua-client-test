@@ -6,6 +6,7 @@ import {
   MAIN_PAGE_LOGO_ICON_PATH,
   MAIN_PAGE_TITLE,
 } from "../../utils/api";
+import NavBar from "../NavBar/NavBar";
 
 // const inter = Inter({ subsets: ["latin"] });
 
