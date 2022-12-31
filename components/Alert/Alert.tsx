@@ -93,7 +93,7 @@ export class Alert extends Component<AlertProps, AlertState> {
             <div>
               <div
                 onClick={this.props.onClose}
-                className="bg-red-50 text-red-700 hover:bg-red-700 hover:text-white h-9 w-9 rounded-full flex items-center justify-center"
+                className="bg-red-50 text-red-700 hover:bg-red-700 hover:text-white h-9 w-9 rounded-full flex items-center justify-center cursor-pointer"
               >
                 <IoClose className="text-2xl" />
               </div>

@@ -100,52 +100,16 @@ export interface UserData_Interface {
 
 export interface API_GetUsersDetails {
   user_id: string;
-  fname: string;
-  lname: string;
-  gender: string;
-  nid: string;
-  email: string;
+  user_names: string;
   phone: string;
-  location: any;
-  profile_pic: string;
-  role_id: string;
-  username: string;
-  password: string;
-  company_name?: string;
-  company_logo?: string;
-  archive?: any;
-  status?: any;
-  role_name?: string;
-  access: Access_Interface[];
-  user_custom_access?: Access_Interface[];
-  user_bank?: UserBankGet[];
-  user_branches?: branchInterface[];
-  wallet_balance: number;
+  email: string;
 }
 
 export interface UserLoginResponse {
   user_id: string;
-  fname: string;
-  lname: string;
-  gender: string;
-  nid: string;
-  email: string;
+  user_names: string;
   phone: string;
-  location: object;
-  profile_pic: string;
-  role_id: string;
-  username: string;
-  password: string;
-  company_name?: string;
-  company_logo?: string;
-  archive?: any;
-  status?: any;
-  role_name?: string;
-  access?: string;
-  user_custom_access?: string;
-  user_bank?: UserBankGet[];
-  user_branches?: branchInterface[];
-  wallet_balance: number;
+  email: string;
   jwt: string;
 }
 
@@ -204,51 +168,6 @@ export interface FerchLoginDetails {
  * * ****************************** ACTIONS *****************************
  */
 
-export const FormatAccessToObj = (access_name?: string) => {
-  return access_name === undefined
-    ? []
-    : (JSON.parse(access_name) as Access_Interface[]).map((item) => ({
-        access_name: item.access_name,
-        key: item.key,
-        permission: item.permission,
-      }));
-};
-
-const FormatUserData = (res: UserLoginResponse): API_GetUsersDetails => {
-  return {
-    user_id: res.user_id,
-    fname: res.fname,
-    lname: res.lname,
-    gender: res.gender,
-    nid: res.nid,
-    email: res.email,
-    phone: res.phone,
-    location: res.location,
-    profile_pic: res.profile_pic,
-    role_id: res.role_id,
-    username: res.username,
-    password: res.password,
-    company_name: res.company_name === "null" ? undefined : res.company_name,
-    company_logo: res.company_logo === "null" ? undefined : res.company_logo,
-    archive: res.archive,
-    status: res.status,
-    role_name: res.role_name,
-    access: [
-      ...(res.access?.length === 0 ? [] : FormatAccessToObj(res.access)),
-      ...(res.user_custom_access?.length === 0
-        ? []
-        : FormatAccessToObj(res.user_custom_access)),
-    ],
-    user_custom_access:
-      res.user_custom_access?.length === 0
-        ? []
-        : FormatAccessToObj(res.user_custom_access),
-    user_bank: res.user_bank,
-    user_branches: res.user_branches,
-    wallet_balance: res.wallet_balance,
-  };
-};
-
 export const FC_CleanUserDetails = () => {
   return (dispatch: Dispatch) => {
     dispatch<CleanUserDetails>({
@@ -283,7 +202,7 @@ export const FC_Login = (
       dispatch<LoginSuccessDetails>({
         type: ActionTypes.USER_LOGIN_SUCCESS_DATA,
         payload: {
-          data: FormatUserData(res.data),
+          data: res.data,
           token: res.data.jwt,
         },
       });
@@ -311,22 +230,23 @@ export const FC_CheckLoggedIn = (callBack: (status: boolean) => void) => {
       dispatch<LogoutUser>({
         type: ActionTypes.LOGOUT,
       });
+      callBack(true);
       return false;
     }
     try {
       setAxiosToken();
-      const res = await axios.get<UserLoginResponse>(`${API_URL}/user/current`);
+      const res = await axios.get<UserLoginResponse>(`${API_URL}/user/logged`);
       console.log({ logged_user_details: res.data });
       dispatch<LoginSuccessDetails>({
         type: ActionTypes.USER_LOGIN_SUCCESS_DATA,
         payload: {
-          data: FormatUserData(res.data),
+          data: res.data,
           token: token!,
         },
       });
       callBack(true);
     } catch (error: any) {
-      callBack(false);
+      callBack(true);
       console.log("User not: ", { ...error });
       dispatch<LogoutUser>({
         type: ActionTypes.LOGOUT,
@@ -340,12 +260,12 @@ export const FC_ReloadUserInfo = (callBack: (status: boolean) => void) => {
   return async (dispatch: Dispatch) => {
     try {
       setAxiosToken();
-      const res = await axios.get<UserLoginResponse>(`${API_URL}/user/current`);
+      const res = await axios.get<UserLoginResponse>(`${API_URL}/user/logged`);
       console.log({ logged_user_details: res.data });
       dispatch<LoginSuccessDetails>({
         type: ActionTypes.USER_LOGIN_SUCCESS_DATA,
         payload: {
-          data: FormatUserData(res.data),
+          data: res.data,
           token: token!,
         },
       });

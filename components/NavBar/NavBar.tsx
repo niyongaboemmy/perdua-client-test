@@ -3,9 +3,15 @@ import Container from "../Container/Container";
 import ActiveLink from "./ActiveLink";
 import Logo from "../../assets/logo.png";
 import Image from "next/image";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineLogout, AiOutlineShoppingCart } from "react-icons/ai";
+import { StoreState } from "../../reducers";
+import { Auth, FC_Logout } from "../../actions";
+import { connect } from "react-redux";
 
-interface NavBarProps {}
+interface NavBarProps {
+  auth: Auth;
+  FC_Logout: () => void;
+}
 interface NavBarState {
   loading: boolean;
 }
@@ -28,7 +34,7 @@ const NavigationComponent = (props: {
   );
 };
 
-export class NavBar extends Component<NavBarProps, NavBarState> {
+export class _NavBar extends Component<NavBarProps, NavBarState> {
   constructor(props: NavBarProps) {
     super(props);
 
@@ -50,19 +56,33 @@ export class NavBar extends Component<NavBarProps, NavBarState> {
               </div>
             </div>
             {/* Right nav */}
-            <div className="hidden md:flex flex-row items-center justify-end gap-3">
-              <NavigationComponent path="/">Home</NavigationComponent>
-              <NavigationComponent path="/about">About Us</NavigationComponent>
-              <NavigationComponent
-                path="/store"
-                className="flex flex-row items-center justify-center w-amx gap-2"
+            {this.props.auth.isAuthenticated === false ? (
+              <div className="hidden md:flex flex-row items-center justify-end gap-3">
+                <NavigationComponent path="/">Home</NavigationComponent>
+                <NavigationComponent path="/about">
+                  About Us
+                </NavigationComponent>
+                <NavigationComponent
+                  path="/store"
+                  className="flex flex-row items-center justify-center w-amx gap-2"
+                >
+                  <div>
+                    <AiOutlineShoppingCart className="text-xl" />
+                  </div>
+                  <span>Store</span>
+                </NavigationComponent>
+              </div>
+            ) : (
+              <div
+                onClick={() => this.props.FC_Logout()}
+                className="bg-gray-100 rounded p-2 pr-3 flex flex-row items-center justify-center gap-3 w-max hover:bg-yellow-700 hover:text-white font-bold group cursor-pointer"
               >
                 <div>
-                  <AiOutlineShoppingCart className="text-xl" />
+                  <AiOutlineLogout className="text-2xl text-yellow-700 group-hover:text-white" />
                 </div>
-                <span>Store</span>
-              </NavigationComponent>
-            </div>
+                <span>Logout</span>
+              </div>
+            )}
           </div>
         </Container>
       </nav>
@@ -70,4 +90,9 @@ export class NavBar extends Component<NavBarProps, NavBarState> {
   }
 }
 
+const mapStateToProps = ({ auth }: StoreState): { auth: Auth } => {
+  return { auth };
+};
+
+const NavBar = connect(mapStateToProps, { FC_Logout })(_NavBar);
 export default NavBar;

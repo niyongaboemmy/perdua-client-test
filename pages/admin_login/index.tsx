@@ -5,11 +5,25 @@ import {
   AiOutlineLoading3Quarters,
   AiOutlineLogin,
 } from "react-icons/ai";
+import { connect } from "react-redux";
+import { Auth, FC_Login } from "../../actions";
 import { Alert } from "../../components/Alert/Alert";
 import Container from "../../components/Container/Container";
 import PageContainer from "../../components/PageContainer/PageContainer";
+import { StoreState } from "../../reducers";
+import { useRouter } from "next/router";
 
-interface AdminLoginProps {}
+interface AdminLoginProps {
+  auth: Auth;
+  FC_Login: (
+    data: {
+      username: string;
+      password: string;
+    },
+    CallbackFunc: Function
+  ) => void;
+  redirect: (path: string) => void;
+}
 interface AdminLoginState {
   username: string;
   password: string;
@@ -19,9 +33,10 @@ interface AdminLoginState {
   };
   loading: boolean;
   passwordDisplay: boolean;
+  redirect: boolean;
 }
 
-class AdminLogin extends Component<AdminLoginProps, AdminLoginState> {
+class AdminLoginPage extends Component<AdminLoginProps, AdminLoginState> {
   constructor(props: AdminLoginProps) {
     super(props);
 
@@ -34,8 +49,49 @@ class AdminLogin extends Component<AdminLoginProps, AdminLoginState> {
       password: "",
       passwordDisplay: false,
       username: "",
+      redirect: false,
     };
   }
+  LoginFn = async (e: any) => {
+    e.preventDefault();
+    if (this.state.username === "") {
+      return this.setState({
+        error: {
+          target: "username",
+          msg: "Please fill phone number or email",
+        },
+      });
+    }
+    if (this.state.password === "") {
+      return this.setState({
+        error: {
+          target: "password",
+          msg: "Please fill password",
+        },
+      });
+    }
+    if (this.state.username !== "" && this.state.password !== "") {
+      this.setState({ loading: true });
+      this.props.FC_Login(
+        { username: this.state.username, password: this.state.password },
+        (status: boolean, msg: string) => {
+          status === false &&
+            this.setState({
+              error: {
+                target: "main",
+                msg: msg,
+              },
+            });
+          if (status === true) {
+            this.setState({ redirect: true });
+            this.props.redirect("/admin_homepage");
+          } else {
+            this.setState({ loading: false });
+          }
+        }
+      );
+    }
+  };
   render() {
     return (
       <PageContainer page_title="Admin Authentication | Perdua Publishers">
@@ -44,11 +100,11 @@ class AdminLogin extends Component<AdminLoginProps, AdminLoginState> {
             <div className="grid grid-cols-12">
               <div className="col-span-12 md:col-span-3 lg:col-span-4"></div>
               <div className="col-span-12 md:col-span-6 lg:col-span-4">
-                <div className="bg-white rounded-md p-3 lg:p-5">
-                  <div className="text-xl font-bold">Authentication</div>
+                <div className="bg-white rounded-md p-3 lg:p-5 animate__animated animate__zoomIn animate__faster">
+                  <div className="text-2xl font-bold">Authentication</div>
                   <div>
-                    <form>
-                      <div className="mt-4 rounded-md bg-gray-100 p-4 px-4 md:px-4 z-30 animate__animated animate__zoomIn animate__faster">
+                    <form onSubmit={this.LoginFn}>
+                      <div className="mt-4 rounded-md z-30">
                         <div className="flex flex-col gap-1">
                           <span className="font-light text-base">
                             Phone number or email
@@ -128,10 +184,10 @@ class AdminLogin extends Component<AdminLoginProps, AdminLoginState> {
                               }
                               className="absolute inset-y-0 right-0 pr-3 flex items-center leading-5 text-3xl cursor-pointer text-primary-900"
                             >
-                              {this.state.passwordDisplay === false ? (
-                                <AiFillEye />
+                              {this.state.passwordDisplay === true ? (
+                                <AiFillEye className="text-green-600 animate__animated animate__bounceIn" />
                               ) : (
-                                <AiOutlineEyeInvisible />
+                                <AiOutlineEyeInvisible className="text-green-600" />
                               )}
                             </div>
                           </div>
@@ -201,4 +257,20 @@ class AdminLogin extends Component<AdminLoginProps, AdminLoginState> {
   }
 }
 
-export default AdminLogin;
+const mapStateToProps = ({ auth }: StoreState): { auth: Auth } => {
+  return { auth };
+};
+
+const AdminLogin = connect(mapStateToProps, {
+  FC_Login,
+})(AdminLoginPage);
+
+const AdminLoginPageExport = () => {
+  let router = useRouter();
+  const redirect = (path: string) => {
+    router.push(path);
+  };
+  return <AdminLogin redirect={redirect} />;
+};
+
+export default AdminLoginPageExport;
